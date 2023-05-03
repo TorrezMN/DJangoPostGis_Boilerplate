@@ -1,20 +1,66 @@
+version: '3.7'
 
+services:
 
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    env_file:
+      - back/.back_env
+    working_dir: /code/back
+    depends_on:
+      - db
+    volumes:
+      - ./back:/code/back
+    ports:
+      - "8000:8000"   
+    restart: on-failure
+    networks:
+      - full_stack_network
 
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    working_dir: /code/front
+    env_file:
+      - front/.front_env
+    restart: on-failure
+    environment:
+      DEBUG: 1
+    volumes:
+      - ./front:/code
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+      - back
+    networks:
+      - full_stack_network
 
-  postgresql:
+  db:
     container_name: "postgresqlpostgis"
     image: "postgis/postgis"
-    ports: 
-      - "5433:5432"
+    restart: always
+    expose:
+      - "5433"
+    ports:
+      - '5433:5433'
+    command: -p 5433
     volumes:
        - db_persdata:/var/lib/postgrespers
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: bdtuto
+    networks:
+      - full_stack_network
 
-
+networks:
+  full_stack_network:
+    driver: bridge
 
 volumes:
   db_persdata : {}
+
