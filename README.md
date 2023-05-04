@@ -1,3 +1,5 @@
 # DJangoPostGis_Boilerplate
 
-Small project boilerplate to work with georefered data.
+1) *TENER UN ENVIROMENT ACTIVADO PARA TRABAJAR*
+2) *Agregar a package.json* esto -> "start": "PORT=5000 react-scripts start",
+
